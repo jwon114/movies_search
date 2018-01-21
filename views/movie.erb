@@ -1,0 +1,40 @@
+<div class="movie_container">
+	<div class="movie">
+		<img class="movie_poster" src="<%= @movie_data.poster %>" alt="">
+		<div class="movie_details">
+			<div class="movie_details_header">
+				<h1><%= @movie_data.title %></h1>
+				<h2><%= "(" + @movie_data.year + ")" %></h2>
+				<div class="year_rating_runtime">
+					<ul>
+						<li><%= @movie_data.rated %></li>
+						<li><%= @movie_data.runtime %></li>
+						<li><%= @movie_data.genre %></li>
+						<li><%= @movie_data.released %></li>
+						<li><%= @movie_data.language %></li>
+					</ul>
+				</div>
+			</div>
+			<p class="director">Director: <%= @movie_data.director %></p>
+			<p>Starring: <%= @movie_data.actors %></p>
+			<p class="plot"><%= @movie_data.plot %></p>
+			<ul class="ratings_container">
+				<% @movie_ratings.each do |rating| %>
+					<li class="ratings">
+						<%= rating[:image] %>
+						<span class="ratings_value"><%= rating[:value] %></span>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	</div>
+	<% if @seasons %>
+		<div class="seasons_list">
+			<ul>
+				<% 1.upto(@seasons.to_i) do |season| %>
+					<li><a href="/movie/<%= @movie_data.imdb_id %>/<%= season %>">Season <%= season %></a></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+</div>

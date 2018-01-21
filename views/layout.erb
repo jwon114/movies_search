@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!-- need to include this meta to set the viewport to the widght of the device in chrome dev tools -->
+	<meta name="viewport" content="width=device-width">
+	<title>Movie Search</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css">
+	<link rel='stylesheet' href='/stylesheets/styles.css'>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="background">
+		<% if request.path_info != "/" %>
+			<nav class="navbar navbar-expand-md navbar-light bg-dark fixed-top">
+				<button class="navbar-toggler navbar-toggler-right" data-toggle="collapse" type="button" data-target="#navbar">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbar">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+						<li class="nav-item"><a class="layout_search_history nav-link" href="/history">Search History</a>
+						</li>
+					</ul>
+				</div>
+				<form class="navbar-form search" action="/movie_listing">
+					<input type="text" placeholder="Movie Title" name="title">
+					<button class="fa fa-search"></button>
+				</form>
+			</nav>
+		<% end %>
+		
+  		<%= yield %>
+
+	</div>
+
+</body>
+</html>

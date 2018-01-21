@@ -1,0 +1,12 @@
+<div class="search_history_container">
+	<div class="search_history">
+		<h1>Top 10 Recent Searches</h1>
+		<ul class="history_list">
+			<% if @search_history %>
+				<% @search_history.each do |item| %>
+					<li><a class="history_list_item" href="/movie_listing/<%= item %>"><%= item %></a></li>
+				<% end %>
+			<% end %>
+		</ul>
+	</div>
+</div>
