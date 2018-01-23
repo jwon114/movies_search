@@ -3,12 +3,15 @@ require 'sinatra/reloader'
 require 'httparty'
 require 'json'
 require 'uri'
+require 'typhoeus'
 require_relative 'db_config'
 require_relative 'models/movie'
 require_relative 'models/search_history'
 require_relative 'models/movie_season_episode'
 require 'pry'
 
+
+API_KEY = '2f6435d9'
 
 # TODO LIST
 # wrap movie text in movie listing view so text is the width of the poster
@@ -67,6 +70,10 @@ helpers do
 		return movie_ratings
 	end
 
+	def add_episode
+		new_episode = Episode
+	end
+
 end
 
 
@@ -77,25 +84,22 @@ end
 
 get '/movie_listing/:title' do
 
-	result = HTTParty.get("http://omdbapi.com/?apikey=2f6435d9&s=#{params[:title]}")
-	
+	result = HTTParty.get("http://omdbapi.com/?apikey=#{API_KEY}&s=#{params[:title]}")
+
 	if result["Response"] == "False"
 		@error = result["Error"]
 		erb :error
 	elsif result["Response"] == "True"
 		history = SearchHistory.create(title: params[:title])
-		# history = File.open("history.txt", "a")
-		# history.puts(params[:movie])
-		# history.close
 		# check totalResults count to see if there is only one result. redirect to
 		if result["totalResults"] == "1"
 			redirect to("/movie/#{result['Search'][0]['imdbID']}")
 		else
 			@movie_listing_data = result["Search"]
+			erb :movie_listing
 		end
 	end
 
-	erb :movie_listing
 end
 
 get '/movie_listing' do
@@ -119,7 +123,7 @@ get '/movie/:id' do
 		@movie_ratings = build_ratings_images(ratings)
 		@seasons = movie_result.total_seasons
 	else
-		result = HTTParty.get("http://omdbapi.com/?apikey=2f6435d9&i=#{params[:id]}")
+		result = HTTParty.get("http://omdbapi.com/?apikey=#{API_KEY}&i=#{params[:id]}")
 		if result["Response"] == "False"
 			@error = result["Error"]
 			erb :error
@@ -139,6 +143,9 @@ get '/movie/:id' do
 end
 
 get '/movie/:id/:season' do
+
+	# ok to loop through the episodes and make web requests, the issue is the requests are blocking, need to fire multiple requests at once, use another gem besides httparty
+
 	# episode_total = HTTParty.get("http://omdbapi.com/?apikey=2f6435d9&i=#{params[:id]}&season=#{params[:season]}")["Episodes"].count
 	# episode_result = MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).order("episode")
 	
@@ -156,12 +163,29 @@ get '/movie/:id/:season' do
 	# 	@episode_list = episode_result
 	# else 
 	# hard to store episode list because dont have logic to add episodes if they arent all in database
-		episode_result = HTTParty.get("http://omdbapi.com/?apikey=2f6435d9&i=#{params[:id]}&season=#{params[:season]}")
+		episode_result = HTTParty.get("http://omdbapi.com/?apikey=#{API_KEY}&i=#{params[:id]}&season=#{params[:season]}")
 		if episode_result["Response"] == "False"
-			@erorr = episode_result["Error"]
+			@error = episode_result["Error"]
 			erb :error
 		elsif episode_result["Response"] == "True"
-			@episode_list = episode_result["Episodes"]
+			# @episode_list = episode_result["Episodes"]
+			episode_list = episode_result["Episodes"]
+			episodes_fetch = []
+			hydra = Typhoeus::Hydra.new(max_concurrency: 2)
+			requests = episode_list.map do |episode|
+				request = Typhoeus::Request.new("http://omdbapi.com/?apikey=#{API_KEY}&i=#{episode['imdbID']}")
+				hydra.queue(request)
+				request
+			end
+			hydra.run
+			# @episodes = requests.map do |response|
+			# 	JSON.parse(response.response.body)
+			# end
+			requests.each do |response|
+
+			end
+			# @episodes = episodes_fetch.sort_by { |episode_hash| episode_hash["Episode"].to_i }
+			# binding.pry
 		end
 
 	# end
@@ -195,10 +219,6 @@ end
 # search a tv series by checking the type="series", totalSeasons will give number or seasons, if type is series then display 
 # buttons on series page to jump to the season, within season list the episodes
 # use the gem will_paginate for pagination
-
-def movie_listing_url
-
-end
 
 
 

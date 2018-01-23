@@ -458,7 +458,7 @@ nav ul li a {
 }
 
 .seasons_list {
-	background-color: mistyrose;
+	background-color: darkgrey;
 }
 
 .seasons_list ul {
@@ -537,18 +537,53 @@ nav ul li a {
 	margin: 100px 80px;
 }
 
-.season_listing_headers {
-	color: red;
+.season_listing_episode {
+	border: 1px solid white;
+	color: cornflowerblue;
+	background-color: rgba(0,0,0,0.85);
+	margin: 10px 0;
+	display: flex;
 }
 
-.season_listing li {
-	width: 30%;
-	flex-grow: 1;
-	margin: 5px;
-	padding: 10px;
-	border: 1px solid red;
-	text-align: center;
+.season_listing_episode img {
+	height: 350px;
 }
+
+.episode_details {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.episode_header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.episode_header > * {
+	padding: 0;
+}
+
+.episode_title {
+	padding: 0;
+	/*margin: 10px 0;*/
+}
+
+.episode_plot {
+	padding: 0;
+	/*margin: 10px 0;*/
+}
+
+.episode_contents {
+	display: flex;
+	justify-content: space-between;
+	font-size: 25px;
+}
+
+
+
 
 
 

@@ -1,26 +1,16 @@
 <div class="season_listing_container">
-	<div class="row season_listing_headers">
-		<div class="col-md-2">Episode #</div>
-		<div class="col-md-4">Title</div>
-		<div class="col-md-3">Release Date</div>
-		<div class="col-md-3">IMDB Rating</div>
-	</div>
-	<% @episode_list.each do |episode| %>
-		<a href="/movie/<%= episode["imdbID"] %>">
-			<div class="row">
-				<div class="col-md-2">
-					<%= episode["Episode"]%>
+	<% @episodes.each do |episode| %>
+		<div class="season_listing_episode">
+			<img src="<%= episode["Poster"] %>" alt="">
+			<div class="episode_details">
+				<div class="episode_header">
+					<h2>Episode # <%= episode["Episode"]%></h2> 
+					<p>Released <%= episode["Released"]%></p>
 				</div>
-				<div class="col-md-4">
-					<%= episode["Title"] %>
-				</div>
-				<div class="col-md-3">
-					<%= episode["Released"]%>
-				</div>
-				<div class="col-md-3">
-					<%= episode["imdbRating"]%>
-				</div>
+				<h2 class="episode_title"><%= episode["Title"] %></h2>
+				<p class="episode_plot"><%= episode["Plot"] %></p>
+				<span>IMDB Rating <%= episode["imdbRating"]%></span>
 			</div>
-		</a>
+		</div>
 	<% end %>
 </div>
