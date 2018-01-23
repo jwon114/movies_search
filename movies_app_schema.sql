@@ -22,16 +22,29 @@ CREATE TABLE movies (
 	ratings JSON,
 	imdb_id VARCHAR(300),
 	movie_type VARCHAR(100),
-	total_seasons VARCHAR(100)
+	total_seasons INTEGER
 );
 
 CREATE TABLE movie_season_episodes (
 	id SERIAL PRIMARY KEY,
 	title VARCHAR(300),
+	year VARCHAR(10),
+	rated VARCHAR(10),
 	released VARCHAR(300),
-	episode VARCHAR(100),
+	season INTEGER,
+	episode INTEGER,
+	runtime VARCHAR(100),
+	genre VARCHAR(300),
+	director VARCHAR(300),
+	writer VARCHAR(600),
+	actors VARCHAR(600),
+	plot VARCHAR(600),
+	language VARCHAR(300),
+	country VARCHAR(100),
+	poster VARCHAR(600),
+	ratings JSON,
 	imdb_rating VARCHAR(100),
 	imdb_id VARCHAR(300),
 	series_id VARCHAR(300),
-	season VARCHAR(100)
+	movie_type VARCHAR(100)
 );

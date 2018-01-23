@@ -1,15 +1,15 @@
 <div class="season_listing_container">
 	<% @episodes.each do |episode| %>
 		<div class="season_listing_episode">
-			<img src="<%= episode["Poster"] %>" alt="">
+			<img src="<%= episode[:poster] %>" alt="">
 			<div class="episode_details">
 				<div class="episode_header">
-					<h2>Episode # <%= episode["Episode"]%></h2> 
-					<p>Released <%= episode["Released"]%></p>
+					<h2>Episode # <%= episode[:episode]%></h2> 
+					<p>Released <%= episode[:released]%></p>
 				</div>
-				<h2 class="episode_title"><%= episode["Title"] %></h2>
-				<p class="episode_plot"><%= episode["Plot"] %></p>
-				<span>IMDB Rating <%= episode["imdbRating"]%></span>
+				<h2 class="episode_title"><%= episode[:title] %></h2>
+				<p class="episode_plot"><%= episode[:plot] %></p>
+				<span>IMDB Rating <%= episode[:imdb_rating]%></span>
 			</div>
 		</div>
 	<% end %>

@@ -37,38 +37,38 @@ VALUES (
 	'movie',
 	null);
 
-INSERT INTO MOVIE_SEASON_EPISODES (
-	title, 
-	released,
-	episode,
-	imdb_rating,
-	imdb_id,
-	series_id,
-	season) 
-VALUES (
-	'Winter Is Coming', 
-	'2011-04-07',
-	'1',
-	'9.5', 
-	'tt1480055',
-	'tt0944947',
-	'1');
+-- INSERT INTO MOVIE_SEASON_EPISODES (
+-- 	title, 
+-- 	released,
+-- 	episode,
+-- 	imdb_rating,
+-- 	imdb_id,
+-- 	series_id,
+-- 	season) 
+-- VALUES (
+-- 	'Winter Is Coming', 
+-- 	'2011-04-07',
+-- 	'1',
+-- 	'9.5', 
+-- 	'tt1480055',
+-- 	'tt0944947',
+-- 	'1');
 
-INSERT INTO MOVIE_SEASON_EPISODES (
-	title, 
-	released,
-	episode,
-	imdb_rating,
-	imdb_id,
-	series_id,
-	season) 
-VALUES (
-	'The Kingsroad', 
-	'2011-04-24',
-	'2',
-	'8.8', 
-	'tt1668746',
-	'tt0944947',
-	'1');
+-- INSERT INTO MOVIE_SEASON_EPISODES (
+-- 	title, 
+-- 	released,
+-- 	episode,
+-- 	imdb_rating,
+-- 	imdb_id,
+-- 	series_id,
+-- 	season) 
+-- VALUES (
+-- 	'The Kingsroad', 
+-- 	'2011-04-24',
+-- 	'2',
+-- 	'8.8', 
+-- 	'tt1668746',
+-- 	'tt0944947',
+-- 	'1');
 
 

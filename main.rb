@@ -39,7 +39,7 @@ helpers do
 		}
 
 		if movie["Type"] == "series"
-			movie_info[:total_seasons] = movie["totalSeasons"]
+			movie_info[:total_seasons] = movie["totalSeasons"].to_i
 		end
 
 		new_movie = Movie.create(movie_info)
@@ -70,8 +70,31 @@ helpers do
 		return movie_ratings
 	end
 
-	def add_episode
-		new_episode = Episode
+	def add_episode(episode)
+		
+		new_episode = MovieSeasonEpisode.new
+		new_episode.title = episode["Title"]
+		new_episode.year = episode["Year"]
+		new_episode.rated = episode["Rated"]
+		new_episode.released = episode["Released"]
+		new_episode.season = episode["Season"]
+		new_episode.episode = episode["Episode"]
+		new_episode.runtime = episode["Runtime"]
+		new_episode.genre = episode["Genre"]
+		new_episode.director = episode["Director"]
+		new_episode.writer = episode["Writer"]
+		new_episode.actors = episode["Actors"]
+		new_episode.plot = episode["Plot"]
+		new_episode.language = episode["Language"]
+		new_episode.country = episode["Country"]
+		new_episode.poster = episode["Poster"]
+		new_episode.ratings = (JSON.generate episode["Ratings"])
+		new_episode.imdb_rating = episode["imdbRating"]
+		new_episode.imdb_id = episode["imdbID"]
+		new_episode.series_id = episode["seriesID"]
+		new_episode.movie_type = episode["Type"]
+
+		new_episode.save
 	end
 
 end
@@ -168,24 +191,23 @@ get '/movie/:id/:season' do
 			@error = episode_result["Error"]
 			erb :error
 		elsif episode_result["Response"] == "True"
-			# @episode_list = episode_result["Episodes"]
 			episode_list = episode_result["Episodes"]
-			episodes_fetch = []
-			hydra = Typhoeus::Hydra.new(max_concurrency: 2)
-			requests = episode_list.map do |episode|
-				request = Typhoeus::Request.new("http://omdbapi.com/?apikey=#{API_KEY}&i=#{episode['imdbID']}")
-				hydra.queue(request)
-				request
-			end
-			hydra.run
-			# @episodes = requests.map do |response|
-			# 	JSON.parse(response.response.body)
-			# end
-			requests.each do |response|
+			# if the number of episodes does not equals the number in the database then fetch again and store
+			if MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).count != episode_list.count
+				# Use Typhoeus gem for HTTP get and Hydra for multipl concurrent requests
+				hydra = Typhoeus::Hydra.new(max_concurrency: 2)
+				requests = episode_list.map do |episode|
+					request = Typhoeus::Request.new("http://omdbapi.com/?apikey=#{API_KEY}&i=#{episode['imdbID']}")
+					hydra.queue(request)
+					request
+				end
+				hydra.run
 
+				requests.each do |response|
+					add_episode(JSON.parse(response.response.body))
+				end
 			end
-			# @episodes = episodes_fetch.sort_by { |episode_hash| episode_hash["Episode"].to_i }
-			# binding.pry
+			@episodes = MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).order("episode ASC")
 		end
 
 	# end
