@@ -10,8 +10,7 @@ require_relative 'models/search_history'
 require_relative 'models/movie_season_episode'
 # require 'pry'
 
-# API_KEY = ENV["OMDB_API_KEY"]
-API_KEY = "2f6435d9"
+API_KEY = ENV["OMDB_API_KEY"]
 
 # TODO LIST
 # wrap movie text in movie listing view so text is the width of the poster
