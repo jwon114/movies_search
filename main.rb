@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'sinatra/reloader'
+# require 'sinatra/reloader'
 require 'httparty'
 require 'json'
 require 'uri'
@@ -8,7 +8,7 @@ require_relative 'db_config'
 require_relative 'models/movie'
 require_relative 'models/search_history'
 require_relative 'models/movie_season_episode'
-require 'pry'
+# require 'pry'
 
 API_KEY = ENV["OMDB_API_KEY"]
 
