@@ -1,9 +1,10 @@
-DROP TABLE IF EXISTS search_history;
+DROP TABLE IF EXISTS search_histories;
 DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS movie_season_episodes;
 
 CREATE TABLE search_histories (
 	id SERIAL PRIMARY KEY,
-	search_name VARCHAR(300),
+	search_name VARCHAR(300)
 );
 
 CREATE TABLE movies (

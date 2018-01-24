@@ -10,7 +10,6 @@ require_relative 'models/search_history'
 require_relative 'models/movie_season_episode'
 require 'pry'
 
-
 API_KEY = ENV["OMDB_API_KEY"]
 
 # TODO LIST
