@@ -12,11 +12,6 @@ require_relative 'models/movie_season_episode'
 
 API_KEY = ENV["OMDB_API_KEY"]
 
-# TODO LIST
-# wrap movie text in movie listing view so text is the width of the poster
-# storing movie season episodes in database? Issue with checking if all episodes are in the database, possibly add column for last updated and check in a months time then update again
-# styling the season episodes in a 3 column grid
-
 helpers do 
 	def add_movie(movie)
 
@@ -166,50 +161,29 @@ end
 
 get '/movie/:id/:season' do
 
-	# ok to loop through the episodes and make web requests, the issue is the requests are blocking, need to fire multiple requests at once, use another gem besides httparty
-
-	# episode_total = HTTParty.get("http://omdbapi.com/?apikey=2f6435d9&i=#{params[:id]}&season=#{params[:season]}")["Episodes"].count
-	# episode_result = MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).order("episode")
-	
-	# if episode_result
-	# 	1.upto(episode_total) do |episode_number|
-	# 		if episode_result[episode_number][:episode] != episode_number.to_s
-
-	# 		end
-	#	end
-	# 		
-	# 	end
-	# 	episode_result.each do |episode|
-	# 		if MovieSeasonEpisode.where(episode: )
-	# 	end
-	# 	@episode_list = episode_result
-	# else 
-	# hard to store episode list because dont have logic to add episodes if they arent all in database
-		episode_result = HTTParty.get("http://omdbapi.com/?apikey=#{API_KEY}&i=#{params[:id]}&season=#{params[:season]}")
-		if episode_result["Response"] == "False"
-			@error = episode_result["Error"]
-			erb :error
-		elsif episode_result["Response"] == "True"
-			episode_list = episode_result["Episodes"]
-			# if the number of episodes does not equals the number in the database then fetch again and store
-			if MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).count != episode_list.count
-				# Use Typhoeus gem for HTTP get and Hydra for multipl concurrent requests
-				hydra = Typhoeus::Hydra.new(max_concurrency: 2)
-				requests = episode_list.map do |episode|
-					request = Typhoeus::Request.new("http://omdbapi.com/?apikey=#{API_KEY}&i=#{episode['imdbID']}")
-					hydra.queue(request)
-					request
-				end
-				hydra.run
-
-				requests.each do |response|
-					add_episode(JSON.parse(response.response.body))
-				end
+	episode_result = HTTParty.get("http://omdbapi.com/?apikey=#{API_KEY}&i=#{params[:id]}&season=#{params[:season]}")
+	if episode_result["Response"] == "False"
+		@error = episode_result["Error"]
+		erb :error
+	elsif episode_result["Response"] == "True"
+		episode_list = episode_result["Episodes"]
+		# if the number of episodes does not equals the number in the database then fetch again and store
+		if MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).count != episode_list.count
+			# Use Typhoeus gem for HTTP get and Hydra for multipl concurrent requests
+			hydra = Typhoeus::Hydra.new(max_concurrency: 2)
+			requests = episode_list.map do |episode|
+				request = Typhoeus::Request.new("http://omdbapi.com/?apikey=#{API_KEY}&i=#{episode['imdbID']}")
+				hydra.queue(request)
+				request
 			end
-			@episodes = MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).order("episode ASC")
-		end
+			hydra.run
 
-	# end
+			requests.each do |response|
+				add_episode(JSON.parse(response.response.body))
+			end
+		end
+		@episodes = MovieSeasonEpisode.where(series_id: params[:id], season: params[:season]).order("episode ASC")
+	end
 
 	erb :season_listing
 end
@@ -225,9 +199,6 @@ get '/history' do
 		ORDER BY id desc 
 		LIMIT 10;" 
 
-	# history = File.readlines("history.txt")
-	# history_filtered = history.reject { |e| e.empty? || e == "\n" }
-	# @search_history = history_filtered.reverse.uniq.first(10)
 	history = SearchHistory.find_by_sql(search_history_sql)
 	@search_history = []
 	history.each do |search|
@@ -237,9 +208,6 @@ get '/history' do
 	erb :history
 end
 
-# search a tv series by checking the type="series", totalSeasons will give number or seasons, if type is series then display 
-# buttons on series page to jump to the season, within season list the episodes
-# use the gem will_paginate for pagination
 
 
 
