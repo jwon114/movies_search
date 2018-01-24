@@ -7,4 +7,6 @@ options = {
 	database: 'movies_app'
 }
 
-ActiveRecord::Base.establish_connection( ENV['DATABASE_URL'] || options)
+ActiveRecord::Base.establish_connection( 
+	ENV['DATABASE_URL'] || options
+)
